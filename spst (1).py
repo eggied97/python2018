@@ -1,5 +1,5 @@
 import graph
-from graph_io import load_graph, write_dot # graphIO import graphs.py, so we do not need to import it here.
+from graph_io import load_graph, write_dot  # graphIO import graphs.py, so we do not need to import it here.
 import os
 import math
 
@@ -13,7 +13,8 @@ TEST_DIJKSTRA_UNDIRECTED = False
 WRITE_DOT_FILES = True
 
 # Use this to select the graphs to test your algorithms on:
-TestInstances = ["weightedexample.gr"]
+#TestInstances = ["weightedexample.gr"]
+TestInstances = ["graph1.gr", "graph2.gr", "graph3.gr", "graph4.gr", "graph5.gr",  "graph6.gr"]
 # TestInstances=["randomplanar.gr"]
 # TestInstances = ["randomplanar10.gr"]
 # TestInstances=["bd.gr","bbf.gr"]; WriteDOTFiles=False
@@ -48,8 +49,6 @@ def bellman_ford_undirected(graph, start):
     # Insert your code here.
 
 
-
-
 def bellman_ford_directed(graph, start):
     """
     Arguments: <graph> is a graph object, where edges have integer <weight>
@@ -68,7 +67,7 @@ def bellman_ford_directed(graph, start):
     start.dist = 0
 
     # Insert your code here.
-    for i in range(0, len(graph.vertices)-1):
+    for i in range(0, len(graph.vertices) - 1):
         for e in graph.edges:
             if e.tail.dist + e.weight < e.head.dist:
                 e.head.dist = e.tail.dist + e.weight
@@ -78,8 +77,8 @@ def bellman_ford_directed(graph, start):
         if e.tail.dist + e.weight < e.head.dist:
             print ("Graph contains a negative-weight cycle")
 
-def dijkstra_undirected(graph, start):
 
+def dijkstra_undirected(graph, start):
     """
     Arguments: <graph> is a graph object, where edges have integer <weight>
         attributes,	and <start> is a vertex of <graph>.
@@ -97,34 +96,7 @@ def dijkstra_undirected(graph, start):
     start.dist = 0
 
     # Insert your code here.
-    unvisitedQ = []
-    for v in graph.vertices:
-        unvisitedQ.append(v)
 
-    while not(len(unvisitedQ) == 0):
-        u = getMinDist(unvisitedQ)
-        unvisitedQ.remove(u)
-
-        neighboursOfU = u.neighbours
-
-        for v in neighboursOfU:
-            if v in unvisitedQ:
-                alt = u.dist + graph.find_edge(u,v).weight
-                if alt < v.dist:
-                    v.dist = alt
-                    v.in_edge = u
-
-def getMinDist(unvisitedQ):
-    u = None
-
-    for v in unvisitedQ:
-        if u == None:
-            u = v
-        else:
-            if u.dist > v:
-                u = v
-
-    return u
 
 def dijkstra_directed(graph, start):
     """
@@ -143,6 +115,42 @@ def dijkstra_directed(graph, start):
 
     start.dist = 0
     # Insert your code here.
+    unvisitedQ = []
+    for v in graph.vertices:
+        unvisitedQ.append(v)
+
+    while not (len(unvisitedQ) == 0):
+        u = getMinDist(unvisitedQ)
+        unvisitedQ.remove(u)
+
+        neighboursOfU = u.neighbours
+
+        for v in neighboursOfU:
+            if v in unvisitedQ:
+                #alt = u.dist + graph.find_edge(u, v).weight
+                if findEdge(u,v,graph) is not None:
+                    alt = u.dist + findEdge(u,v,graph).weight
+                    if alt < v.dist:
+                        v.dist = alt
+                        v.in_edge = u
+
+def findEdge(u, v, g):
+    for e in g.edges:
+        if (e.tail == u and e.head == v):
+            return e
+    return None
+
+def getMinDist(unvisitedQ):
+    u = None
+
+    for v in unvisitedQ:
+        if u == None:
+            u = v
+        else:
+            if u.dist > v.dist:
+                u = v
+
+    return u
 
 
 ##############################################################################
@@ -225,7 +233,8 @@ if __name__ == "__main__":
         # Fifth: Whether output should be directed
         for testalg in [("Bellman-Ford, undirected", TEST_BELLMAN_FORD_UNDIRECTED, bellman_ford_undirected,
                          "BellmanFordUndirected", False),
-                        ("Bellman-Ford, directed", TEST_BELLMAN_FORD_DIRECTED, bellman_ford_directed, "BellmanFordDirected",
+                        ("Bellman-Ford, directed", TEST_BELLMAN_FORD_DIRECTED, bellman_ford_directed,
+                         "BellmanFordDirected",
                          True),
                         ("Dijkstra, undirected", TEST_DIJKSTRA_UNDIRECTED, dijkstra_undirected, "DijkstraUndirected",
                          False),
