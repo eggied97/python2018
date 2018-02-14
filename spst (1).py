@@ -69,9 +69,17 @@ def bellman_ford_directed(graph, start):
 
     # Insert your code here.
     for i in range(0, len(graph.vertices)-1):
-        print(i)
+        for e in graph.edges:
+            if e.tail.dist + e.weight < e.head.dist:
+                e.head.dist = e.tail.dist + e.weight
+                e.head.in_edge = e.tail
+
+    for e in graph.edges:
+        if e.tail.dist + e.weight < e.head.dist:
+            print ("Graph contains a negative-weight cycle")
 
 def dijkstra_undirected(graph, start):
+
     """
     Arguments: <graph> is a graph object, where edges have integer <weight>
         attributes,	and <start> is a vertex of <graph>.
@@ -89,7 +97,34 @@ def dijkstra_undirected(graph, start):
     start.dist = 0
 
     # Insert your code here.
+    unvisitedQ = []
+    for v in graph.vertices:
+        unvisitedQ.append(v)
 
+    while not(len(unvisitedQ) == 0):
+        u = getMinDist(unvisitedQ)
+        unvisitedQ.remove(u)
+
+        neighboursOfU = u.neighbours
+
+        for v in neighboursOfU:
+            if v in unvisitedQ:
+                alt = u.dist + graph.find_edge(u,v).weight
+                if alt < v.dist:
+                    v.dist = alt
+                    v.in_edge = u
+
+def getMinDist(unvisitedQ):
+    u = None
+
+    for v in unvisitedQ:
+        if u == None:
+            u = v
+        else:
+            if u.dist > v:
+                u = v
+
+    return u
 
 def dijkstra_directed(graph, start):
     """
@@ -107,8 +142,8 @@ def dijkstra_directed(graph, start):
         v.in_edge = None
 
     start.dist = 0
-
     # Insert your code here.
+
 
 ##############################################################################
 #
